@@ -4,6 +4,8 @@ Usage, provide an NYC address:
 
 python3 commute.py "159 East 33rd Street"
 
+Quotes are important!
+
 '''
 
 import requests
@@ -17,14 +19,13 @@ from pathlib import Path
 
 potential_apt = str(sys.argv[1]) + " New York City"
 
-offices = {"office_len" : "PX6Q+C7 New York",
-           "office_raj" : "Q24V+7G New York",
-           "office_phi" : "Q26H+RH New York"}
+offices = {"Roommate One" : "World Trade Center New York",
+           "Roommate Two" : "5th Ave Trump Tower New York",
+           "Roommate Three" : "Cornell Tech Roosevelt Island New York"}
 
 # Get API Key
 load_dotenv(Path(".env"))
 api_key = os.getenv("GMAPS_API_KEY")
-
 
 
 def get_tomorrow_nine_am_epoch():
@@ -62,11 +63,13 @@ headers = {}
 for name, pluscode in offices.items():
     url = request_builder(pluscode)
     response = requests.request("GET", url, headers=headers, data=payload)
+    response_object = response.json()["routes"][0]["legs"][0]
     try:
         # Print the Total Duration of the Trip
-        print(name, response.json()["routes"][0]["legs"][0]["duration"]["text"])
+        print(name, "will have a", response_object["duration"]["text"], "commute")
+        print("Starting from", response_object["start_address"])
         # Print How the Time is Split Up
-        transit_split, transit_desc = get_transit_split(response.json()["routes"][0]["legs"][0]["steps"])
+        transit_split, transit_desc = get_transit_split(response_object["steps"])
         for mode, duration in transit_split.items():
             print("->", mode, "for", round(duration, 2), "minutes")
         # Print the Instructions
