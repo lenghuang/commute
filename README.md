@@ -5,4 +5,3 @@ In the summer of 2023, I was going to move to New York City with two other roomm
 ## Demo Videos
 
 ![](/assets/demo.gif)
-![](/assets/demo.mov)
